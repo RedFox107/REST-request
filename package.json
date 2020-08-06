@@ -1,0 +1,22 @@
+{
+  "name": "rest-request",
+  "description": "The library is designed for making different types of requests to the server and processing the received data",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "",
+  "keywords": [
+    "rest",
+    "API"
+  ],
+  "scripts": {
+    "build": "yarn run babel index.js --out-dir build"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "babel-preset-minify": "^0.5.1",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.0"
+  }
+}
