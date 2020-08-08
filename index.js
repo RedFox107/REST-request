@@ -188,7 +188,4 @@ class REST_request {
     }
 }
 
-
-
-/*
-module.exports = REST_request;*/
+module.exports = REST_request;
