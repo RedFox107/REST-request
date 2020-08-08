@@ -1,16 +1,23 @@
 {
   "name": "rest-request",
   "description": "The library is designed for making different types of requests to the server and processing the received data",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
   "repository": "",
   "keywords": [
     "rest",
-    "API"
+    "http",
+    "https",
+    "api",
+    "ajax",
+    "promise",
+    "rest-request",
+    "xhr"
   ],
   "scripts": {
-    "build": "yarn run babel index.js --out-dir build"
+    "build": "yarn run babel index.js --out-dir build",
+    "dev": "yarn run babel index.js --out-file dev.js --watch"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.10.4",

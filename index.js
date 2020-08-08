@@ -1,4 +1,4 @@
-class Swallow {
+class REST_request {
     #loadingRequests = [];//{id:1,xhr:some XmlHttpRequest}
     #withCredentials;
     #commonBodyParams;
@@ -15,7 +15,8 @@ class Swallow {
             withCredentials = false,
             baseUrl = '',
             responseDataType = 'text',
-            commonSearchParams = []
+            commonSearchParams = [],
+            withAbort = false
         } = initialOptions;
 
         this.#withCredentials = withCredentials;//boolean
@@ -24,6 +25,7 @@ class Swallow {
         this.#headers = headers;//array of objects
         this.#baseUrl = baseUrl;
         this.#responseDataType = responseDataType;
+        this.withAbort = withAbort;
     }
 
     #getId = () => {
@@ -46,7 +48,8 @@ class Swallow {
         if (!!this.#baseUrl) {
             url = new URL(additionalURL, this.#baseUrl);
         } else {
-            url = new URL(additionalURL);
+            const location = additionalURL[0]==="/"?window.location.href.slice(0,-1):window.location.href;
+            url = new URL(location+additionalURL);
         }
         this.#setSearchParams(url, {...this.#commonSearchParams, ...params});
         return url;
@@ -64,6 +67,14 @@ class Swallow {
     };
     #createBodyParams = (additionalParams = {}) => {
         return JSON.stringify({...this.#commonBodyParams, ...additionalParams})
+    };
+    #createUserData = ({funcToXHRPromise,abortId,send,withAbort})=>{
+        const promise = new Promise(funcToXHRPromise);
+        const abort = withAbort!==null?withAbort:this.withAbort;
+        return {
+            userData: abort?[promise, abortId]:promise,
+            send
+        }
     };
     #setHeaders = (xhr, headers = {}) => {
         if (!!headers) {
@@ -94,22 +105,16 @@ class Swallow {
     #initializeRequest = (method, additionalURL, options) => {
         const abortId = this.#getId();
         const {searchParams, ...additionalOptions} = options;
-        const {headers = {}, withCredentials = null, responseDataType = null} = additionalOptions;
-        let [send, promiseFunc] = this.#createXHR({
+        const {headers = {}, withCredentials = null, responseDataType = null,withAbort = null} = additionalOptions;
+        let [send, funcToXHRPromise] = this.#createXHR({
             method, additionalURL,
             searchParams, responseDataType,
             withCredentials, headers, abortId
         });
-        return {
-            userData: [
-                new Promise(promiseFunc),
-                abortId
-            ],
-            send
-        }
+        return this.#createUserData({funcToXHRPromise,abortId,send,withAbort});
     };
     #setMethods = (xhr, resolve, reject, abortId) => {
-        const successReq = ({currentTarget}) => {
+        xhr.onload = ({currentTarget}) => {
             let {response, status} = currentTarget;
 
             response = this.toJSON(response);
@@ -122,13 +127,13 @@ class Swallow {
 
             this.#usedIds.delete(abortId);
         };
-        xhr.onload = successReq;
-        xhr.onerror = successReq
+        xhr.onerror = ()=>{
+            reject({status:0,error:"connection error"});
+        };
         xhr.onabort = () => {
             resolve(this.abort(abortId));
             this.#usedIds.delete(abortId);
         };
-        xhr.onloadend =successReq;
     };
 
     abort(id) {
@@ -183,4 +188,7 @@ class Swallow {
     }
 }
 
-module.exports = Swallow;
+
+
+/*
+module.exports = REST_request;*/
