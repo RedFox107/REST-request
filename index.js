@@ -15,7 +15,7 @@ class REST_request {
             withCredentials = false,
             baseUrl = '',
             responseDataType = 'text',
-            commonSearchParams = [],
+            commonSearchParams = {},
             withAbort = false
         } = initialOptions;
 
@@ -66,7 +66,9 @@ class REST_request {
         }
     };
     #createBodyParams = (additionalParams = {}) => {
-        return JSON.stringify({...this.#commonBodyParams, ...additionalParams})
+        if(typeof additionalParams === 'object')
+            return JSON.stringify({...this.#commonBodyParams, ...additionalParams})
+        return additionalParams
     };
     #createUserData = ({funcToXHRPromise,abortId,send,withAbort})=>{
         const promise = new Promise(funcToXHRPromise);
@@ -131,7 +133,7 @@ class REST_request {
             reject({status:0,error:"connection error"});
         };
         xhr.onabort = () => {
-            resolve(this.abort(abortId));
+            reject({status:0,error:"Request aborted"});
             this.#usedIds.delete(abortId);
         };
     };
