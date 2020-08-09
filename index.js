@@ -174,19 +174,19 @@ class REST_request {
     }
 
     put(url, data = {}, options = {}) {
-        const {send, userData} = this.#initializeRequest('post', url, options);
+        const {send, userData} = this.#initializeRequest('put', url, options);
         send(this.#createBodyParams(data));
         return userData;
     }
 
     update(url, data = {}, options = {}) {
-        const {send, userData} = this.#initializeRequest('post', url, options);
+        const {send, userData} = this.#initializeRequest('update', url, options);
         send(this.#createBodyParams(data));
         return userData;
     }
 
     delete(url, data = {}, options = {}) {
-        const {send, userData} = this.#initializeRequest('post', url, options);
+        const {send, userData} = this.#initializeRequest('delete', url, options);
         send(this.#createBodyParams(data));
         return userData;
     }
