@@ -43,13 +43,23 @@ class REST_request {
             return data;
         }
     };
+    #isURL = (url)=>{
+        try {
+            new URL(url);
+            return true
+        }catch (e) {
+            return false
+        }
+    };
     #URLConstructor = (additionalURL, params = {}) => {
         let url;
         if (!!this.#baseUrl) {
             url = new URL(additionalURL, this.#baseUrl);
-        } else {
+        } else if(!this.#isURL(additionalURL)) {
             const location = additionalURL[0]==="/"?window.location.href.slice(0,-1):window.location.href;
             url = new URL(location+additionalURL);
+        }else{
+            url = new URL(additionalURL);
         }
         this.#setSearchParams(url, {...this.#commonSearchParams, ...params});
         return url;
@@ -67,7 +77,7 @@ class REST_request {
     };
     #createBodyParams = (additionalParams = {}) => {
         if(typeof additionalParams === 'object')
-            return JSON.stringify({...this.#commonBodyParams, ...additionalParams})
+            return JSON.stringify({...this.#commonBodyParams, ...additionalParams});
         return additionalParams
     };
     #createUserData = ({funcToXHRPromise,abortId,send,withAbort})=>{
