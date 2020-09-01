@@ -33,7 +33,7 @@ const exmpl = new REST_request(
         commonSearchParams: {
             id:1235
         },
-        withAbort = false
+        withAbort: false
     }
 )
 ```
