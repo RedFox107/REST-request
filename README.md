@@ -20,17 +20,17 @@
 ```
 const exmpl = new REST_request(
     {
-        commonBodyParams = {
+        commonBodyParams:{
             param1:123,
             param2:321
-        }, - 
-        headers = {
+        },
+        headers:{
             "API-KEY":"23Tbdf5"
         },
-        withCredentials = false,
-        baseUrl = 'http://someURL/',
-        responseDataType = 'json',
-        commonSearchParams = {
+        withCredentials:false,
+        baseUrl:'http://someURL/',
+        responseDataType: 'json',
+        commonSearchParams: {
             id:1235
         },
         withAbort = false
